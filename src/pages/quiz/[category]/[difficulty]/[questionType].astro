@@ -1,6 +1,8 @@
 ---
 import { retrieveCategoryList } from '@utils/retrieveCategoryList'
 import type { Question } from '@/types'
+import Layout from '@/layouts/Layout.astro'
+import QuizComponent from '@components/Quiz'
 
 export async function getStaticPaths() {
   const categoryList = await retrieveCategoryList()
@@ -35,14 +37,10 @@ const response = await fetch(
   `${url}?amount=10&category=${category}&difficulty=${difficulty}&type=${questionType}`
 )
 
-const data = await response.json()
+const data: Question = await response.json()
 ---
 
-<html>
-  <head>
-    <title>Quiz - {category}</title>
-  </head>
-  <body>
-    <h1>Quiz</h1>
-  </body>
-</html>
+<Layout title="Quiz">
+  <h1 class="text-3xl font-bold text-center pt-8 mb-8">TriviaWise</h1>
+  <QuizComponent data={data} />
+</Layout>
