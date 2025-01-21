@@ -71,6 +71,10 @@ const categories = await retrieveCategoryList()
     >
       Start Playing
     </button>
+
+    <p class="text-red-500 hidden" id="error-msg">
+      Please select all options to start the quiz
+    </p>
   </div>
 </form>
 
@@ -84,6 +88,12 @@ const categories = await retrieveCategoryList()
       const category = formData.get('category')
       const difficulty = formData.get('difficulty')
       const questionType = formData.get('questionType')
+
+      if (!category || !difficulty || !questionType) {
+        const errorMsg = document.getElementById('error-msg')!
+        errorMsg.classList.remove('hidden')
+        return
+      }
 
       window.location.href = `/quiz/${category}/${difficulty}/${questionType}`
     })
