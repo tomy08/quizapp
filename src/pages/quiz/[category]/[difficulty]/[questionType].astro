@@ -1,0 +1,39 @@
+---
+export async function getStaticPaths() {
+  const categories = ['science', 'math', 'history']
+  const difficulties = ['easy', 'medium', 'hard']
+  const questionTypes = ['multiple', 'boolean']
+
+  const paths = []
+  for (const category of categories) {
+    for (const difficulty of difficulties) {
+      for (const questionType of questionTypes) {
+        paths.push({
+          params: {
+            category,
+            difficulty,
+            questionType,
+          },
+        })
+      }
+    }
+  }
+
+  return paths
+}
+
+// Obtener los parámetros dinámicos
+const { category, difficulty, questionType } = Astro.params
+---
+
+<html>
+  <head>
+    <title>Quiz - {category}</title>
+  </head>
+  <body>
+    <h1>Quiz</h1>
+    <p>Category: {category}</p>
+    <p>Difficulty: {difficulty}</p>
+    <p>Question Type: {questionType}</p>
+  </body>
+</html>

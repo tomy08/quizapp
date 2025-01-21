@@ -1,3 +1,8 @@
+---
+import { retrieveCategoryList } from '../utils/retrieveCategoryList'
+const categories = await retrieveCategoryList()
+---
+
 <form
   id="quizForm"
   method="POST"
@@ -19,10 +24,11 @@
           class="block w-full rounded px-3 py-2 shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 sm:text-sm bg-gray-950"
         >
           <option value="">Choose a category</option>
-          <option value="general">General Knowledge</option>
-          <option value="science">Science</option>
-          <option value="history">History</option>
-          <option value="sports">Sports</option>
+          {
+            categories.map((category) => (
+              <option value={category.id}>{category.name}</option>
+            ))
+          }
         </select>
       </div>
       <div>
