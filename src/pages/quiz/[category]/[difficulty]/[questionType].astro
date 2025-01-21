@@ -1,6 +1,11 @@
 ---
+import { retrieveCategoryList } from '@utils/retrieveCategoryList'
+import type { Question } from '@/types'
+
 export async function getStaticPaths() {
-  const categories = ['science', 'math', 'history']
+  const categoryList = await retrieveCategoryList()
+  const categoryIdList = categoryList.map((category) => category.id)
+  const categories = [...categoryIdList]
   const difficulties = ['easy', 'medium', 'hard']
   const questionTypes = ['multiple', 'boolean']
 
@@ -22,8 +27,15 @@ export async function getStaticPaths() {
   return paths
 }
 
-// Obtener los parámetros dinámicos
 const { category, difficulty, questionType } = Astro.params
+
+const url = 'https://opentdb.com/api.php'
+
+const response = await fetch(
+  `${url}?amount=10&category=${category}&difficulty=${difficulty}&type=${questionType}`
+)
+
+const data = await response.json()
 ---
 
 <html>
@@ -32,8 +44,5 @@ const { category, difficulty, questionType } = Astro.params
   </head>
   <body>
     <h1>Quiz</h1>
-    <p>Category: {category}</p>
-    <p>Difficulty: {difficulty}</p>
-    <p>Question Type: {questionType}</p>
   </body>
 </html>

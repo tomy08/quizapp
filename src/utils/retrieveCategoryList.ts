@@ -1,4 +1,4 @@
-import type { Category } from '../types'
+import type { Category } from '@/types'
 
 export const retrieveCategoryList = async (): Promise<Category[]> => {
   return await fetch('https://opentdb.com/api_category.php')
