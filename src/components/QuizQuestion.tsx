@@ -16,7 +16,9 @@ export default function QuizQuestion(props: Props) {
   } = props
   return (
     <div className="flex flex-col items-center justify-center text-white p-6">
-      <h1 className="text-2xl font-bold mb-4">Quiz</h1>
+      <h1 className="text-2xl font-bold mb-4">
+        {currentQuestion.category} Quiz
+      </h1>
       <div className="p-8 rounded-lg w-96  shadow-lg">
         <h2 className="text-xl font-semibold mb-4">
           {currentQuestion.question}
