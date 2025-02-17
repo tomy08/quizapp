@@ -13,7 +13,7 @@ export default function QuizScore(props: Props) {
       <h1 className="text-2xl font-bold mb-4">Quiz Completed!</h1>
       <p className="text-xl mb-4">You scored {score} out of 10</p>
 
-      <div className="w-full max-w-2xl bg-gray-800 p-4 rounded-lg">
+      <div className="w-full max-w-2xl  p-4 rounded-lg overflow-y-auto max-h-[350px]">
         {answeredQuestions.map((q, index) => (
           <div key={index} className="p-3 border-b border-gray-700">
             <p className="font-semibold">{q.question}</p>
