@@ -3,6 +3,13 @@ export interface Category {
   name: string
 }
 
+export interface AnsweredQuestion {
+  question: string
+  selectedAnswer: string
+  correctAnswer: string
+  isCorrect: boolean
+}
+
 export interface Question {
   response_code: number
   results: Result[]
