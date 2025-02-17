@@ -46,23 +46,6 @@ const categories = await retrieveCategoryList()
           <option value="hard">Hard</option>
         </select>
       </div>
-      <div>
-        <label
-          for="questionType"
-          class="block text-sm font-medium text-gray-200"
-        >
-          Question Type
-        </label>
-        <select
-          id="questionType"
-          name="questionType"
-          class="block w-full rounded border-gray-300 px-3 py-2 shadow-sm focus:border-green-500 focus:ring focus:ring-green-500 bg-gray-950 sm:text-sm"
-        >
-          <option value="">Choose question type</option>
-          <option value="multiple">Multiple Choice</option>
-          <option value="boolean">True/False</option>
-        </select>
-      </div>
     </div>
 
     <button
@@ -87,14 +70,13 @@ const categories = await retrieveCategoryList()
       const formData = new FormData(form)
       const category = formData.get('category')
       const difficulty = formData.get('difficulty')
-      const questionType = formData.get('questionType')
 
-      if (!category || !difficulty || !questionType) {
+      if (!category || !difficulty) {
         const errorMsg = document.getElementById('error-msg')!
         errorMsg.classList.remove('hidden')
         return
       }
 
-      window.location.href = `/quiz/${category}/${difficulty}/${questionType}`
+      window.location.href = `/quiz/${category}/${difficulty}`
     })
 </script>

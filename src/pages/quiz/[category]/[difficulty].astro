@@ -9,37 +9,33 @@ export async function getStaticPaths() {
   const categoryIdList = categoryList.map((category) => category.id)
   const categories = [...categoryIdList]
   const difficulties = ['easy', 'medium', 'hard']
-  const questionTypes = ['multiple', 'boolean']
 
   const paths = []
   for (const category of categories) {
     for (const difficulty of difficulties) {
-      for (const questionType of questionTypes) {
-        paths.push({
-          params: {
-            category,
-            difficulty,
-            questionType,
-          },
-        })
-      }
+      paths.push({
+        params: {
+          category,
+          difficulty,
+        },
+      })
     }
   }
 
   return paths
 }
 
-const { category, difficulty, questionType } = Astro.params
+const { category, difficulty } = Astro.params
 
 const url = 'https://opentdb.com/api.php'
 
 const response = await fetch(
-  `${url}?amount=10&category=${category}&difficulty=${difficulty}&type=${questionType}`
+  `${url}?amount=10&category=${category}&difficulty=${difficulty}&type=multiple`
 )
 
 const data: Question = await response.json()
 ---
 
 <Layout title="Quiz">
-  <QuizComponent data={data} />
+  <QuizComponent data={data} client:load />
 </Layout>

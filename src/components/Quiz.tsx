@@ -1,97 +1,85 @@
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import type { Question } from '@/types'
 
 export default function Quiz({ data }: { data: Question }) {
-  const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [score, setScore] = useState(0)
   const [showScore, setShowScore] = useState(false)
-  const [selectedAnswers, setSelectedAnswers] = useState([] as string[])
+  const [answeredQuestions, setAnsweredQuestions] = useState(0)
 
-  const handleAnswer = (answer: string) => {
-    setSelectedAnswers((prev) => [...prev, answer])
-    if (answer === data.results[currentQuestion].correct_answer) {
-      setScore(score + 1)
-    }
+  if (!data || !data.results || data.results.length === 0) {
+    return <p className="text-white">No questions available.</p>
   }
 
-  const handleNextQuestion = () => {
-    if (currentQuestion < data.results.length - 1) {
-      setCurrentQuestion((prev) => prev + 1)
+  const currentQuestion = data.results[currentQuestionIndex]
+
+  const shuffledAnswers = useMemo(() => {
+    return [
+      ...currentQuestion.incorrect_answers,
+      currentQuestion.correct_answer,
+    ].sort(() => Math.random() - 0.5)
+  }, [currentQuestionIndex])
+
+  const handleAnswerClick = (answer: string) => {
+    console.log(answer)
+    if (answer === currentQuestion.correct_answer) {
+      setScore((prevScore) => prevScore + 1)
+    }
+    setAnsweredQuestions((prev) => prev + 1)
+
+    if (currentQuestionIndex + 1 < data.results.length) {
+      setCurrentQuestionIndex((prevIndex) => prevIndex + 1)
     } else {
-      handleFinish()
+      setShowScore(true)
     }
   }
 
-  const handleFinish = () => {
-    setShowScore(true)
+  const restartQuiz = () => {
+    setCurrentQuestionIndex(0)
+    setScore(0)
+    setShowScore(false)
+    setAnsweredQuestions(0)
   }
 
   if (showScore) {
     return (
-      <div>
-        <h1>Your score is {score}</h1>
+      <div className="flex flex-col items-center justify-center">
+        <h1 className="text-2xl font-bold mb-4 text-white">Quiz Completed!</h1>
+        <p className="text-xl text-gray-50">
+          You scored {score} out of {data.results.length}
+        </p>
         <button
-          onClick={() => window.location.reload()}
-          className="group relative inline-block text-sm font-medium text-white focus:outline-none focus:ring"
+          onClick={restartQuiz}
+          className="mt-6 px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600"
         >
-          <span className="absolute inset-0 border border-green-600 group-active:border-green-500"></span>
-          <span className="block border border-green-600 bg-green-600 px-12 py-3 transition-transform active:border-green-500 active:bg-green-500 group-hover:-translate-x-1 group-hover:-translate-y-1">
-            Play Again
-          </span>
-        </button>
-        // boton para volver al menu principal
-        <button
-          onClick={() => {
-            window.location.href = '/'
-          }}
-          className="group relative inline-block text-sm font-medium text-white focus:outline-none focus:ring"
-        >
-          Go back to main menu
+          Restart Quiz
         </button>
       </div>
     )
   }
 
-  const answers = [
-    ...data.results[currentQuestion].incorrect_answers,
-    data.results[currentQuestion].correct_answer,
-  ]
-
-  const shuffledAnswers = answers.sort(() => Math.random() - 0.5)
-
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-center pt-8 mb-8 text-gray-50">
-        TriviaWise
-      </h1>
-      <h2 className="font-extrabold text-gray-50 sm:block text-xl text-center ">
-        {data.results[currentQuestion].question}
-      </h2>
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        {shuffledAnswers.map((answer, index) => (
-          <button
-            key={answer}
-            className="group relative inline-block text-sm font-medium text-green-600 focus:outline-none focus:ring active:text-green-500"
-            onClick={() => handleAnswer(answer)}
-          >
-            <span className="absolute inset-0 border border-current"></span>
-            <span className="block border border-current bg-gray-950 px-12 py-3 transition-transform group-hover:-translate-x-1 group-hover:-translate-y-1">
+    <div className="flex flex-col items-center justify-center">
+      <h1 className="text-2xl font-bold mb-4 text-white">Quiz</h1>
+      <div className="p-8 rounded-lg w-96">
+        <h2 className="text-xl font-semibold mb-4 text-gray-50">
+          {currentQuestion.question}
+        </h2>
+        <div className="space-y-4">
+          {shuffledAnswers.map((answer, index) => (
+            <button
+              key={index}
+              onClick={() => handleAnswerClick(answer)}
+              className="w-full px-4 py-2 border-green-400 text-white rounded border-2 hover:border-green-500"
+            >
               {answer}
-            </span>
-          </button>
-        ))}
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="grid grid-cols-1 mt-8">
-        <button
-          onClick={handleNextQuestion}
-          className="group relative inline-block text-sm font-medium text-white focus:outline-none focus:ring"
-        >
-          <span className="absolute inset-0 border border-green-600 group-active:border-green-500"></span>
-          <span className="block border border-green-600 bg-green-600 px-12 py-3 transition-transform active:border-green-500 active:bg-green-500 group-hover:-translate-x-1 group-hover:-translate-y-1">
-            {currentQuestion === data.results.length - 1 ? 'Finish' : 'Next'}
-          </span>
-        </button>
-      </div>
+      <p className="mt-4 text-gray-100">
+        Answered {answeredQuestions} of {data.results.length} questions
+      </p>
     </div>
   )
 }
