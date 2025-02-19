@@ -13,10 +13,6 @@ export default function Quiz({ data }: { data: Question }) {
   >([])
   const [shuffledAnswers, setShuffledAnswers] = useState<string[]>([])
 
-  if (!data || !data.results || data.results.length === 0) {
-    return <p className="text-white">No questions available.</p>
-  }
-
   const currentQuestion = data.results[currentQuestionIndex]
 
   useEffect(() => {
